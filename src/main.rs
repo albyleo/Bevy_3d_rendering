@@ -38,11 +38,7 @@ fn setup(
     let mut graph = AnimationGraph::new();
     let animations = graph
         .add_clips(
-<<<<<<< HEAD
-            [GltfAssetLabel::Animation(0).from_asset("ANGEL.glb")]
-=======
             [GltfAssetLabel::Animation(0).from_asset("ANGEL-FRANK1.glb")]
->>>>>>> 3ebf45f9074669ea3e125ee4df4c9106a2f04b1d
                 .into_iter()
                 .map(|path| asset_server.load(path)),
             1.0,
@@ -90,11 +86,7 @@ fn setup(
     });
 
     // Load the glTF scene and start the animation
-<<<<<<< HEAD
-    let scene_handle = asset_server.load("ANGEL.glb#Scene0");
-=======
     let scene_handle = asset_server.load("ANGEL-FRANK1.glb#Scene0");
->>>>>>> 3ebf45f9074669ea3e125ee4df4c9106a2f04b1d
     commands.spawn(SceneBundle {
         scene: scene_handle.clone(),
         ..default()
