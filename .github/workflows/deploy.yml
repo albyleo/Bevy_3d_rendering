@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Modifica se il tuo branch principale ha un altro nome
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Specifica la versione di Node.js necessaria
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build project
+        run: |
+          npm run build  # Modifica secondo il tuo script di build
+
+      - name: Deploy to GitHub Pages
+        run: |
+          # Copia i contenuti da webuild/out a una directory temporanea
+          mkdir out
+          cp -r webuild/out/* out/
+
+          # Inizializza un nuovo repository nella directory out
+          cd out
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy to GitHub Pages"
+          git push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
