@@ -2181,5 +2181,5 @@ async function __wbg_init(input) {
     return __wbg_finalize_init(instance, module);
 }
 
-export { initSync }
+export { initSync };
 export default __wbg_init;
