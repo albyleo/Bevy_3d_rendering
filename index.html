@@ -104,19 +104,19 @@
                 await init();
                 console.log("Bevy initialized successfully");
 
-                const glbUrl = './assets/ANGEL-FRANK1.glb';
+                const glbUrl = 'assets/ANGEL-FRANK1.glb';
                 console.log(`Attempting to load model from ${glbUrl}`);
-                
-                // Simulate loading model
-                const response = await fetch(glbUrl);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch model: ${response.statusText}`);
+                try {
+                    const response = await fetch(glbUrl);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch model: ${response.statusText}`);
+                    }
+                    const modelData = await response.arrayBuffer();
+                    console.log("Model data loaded successfully", modelData.byteLength);
+                } catch (error) {
+                    console.error("Error loading model:", error);
                 }
-                
-                const modelData = await response.arrayBuffer();
-                console.log("Model data loaded successfully", modelData);
 
-                // Add code to pass modelData to Bevy or handle it as needed
             } catch (e) {
                 console.error("Initialization or model loading failed:", e);
             }
@@ -128,7 +128,6 @@
                 console.error("Canvas element not found");
             }
         }
-
         start();
     </script>
 </body>
