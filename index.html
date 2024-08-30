@@ -97,38 +97,40 @@
         })();
     </script>
     <script type="module">
+        
         import init from './out/bevy_3d_rendering.js'
+
+        async function runBevy() {
+            await init();
+            // L'applicazione Bevy ora sta eseguendo il suo loop principale
+        }
+
         async function start() {
             try {
                 console.log("Initializing Bevy...");
-                await init();
-                console.log("Bevy initialized successfully");
-
-                const glbUrl = 'assets/ANGEL-FRANK1.glb';
-                console.log(`Attempting to load model from ${glbUrl}`);
-                try {
-                    const response = await fetch(glbUrl);
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch model: ${response.statusText}`);
-                    }
-                    const modelData = await response.arrayBuffer();
-                    console.log("Model data loaded successfully", modelData.byteLength);
-                } catch (error) {
-                    console.error("Error loading model:", error);
-                }
-
+                await runBevy();
+                console.log("Bevy execution completed");
             } catch (e) {
-                console.error("Initialization or model loading failed:", e);
+                console.error("Bevy initialization or execution failed:", e);
             }
 
-            const canvas = document.querySelector('canvas');
-            if (canvas) {
-                console.log("Canvas element found:", canvas);
-            } else {
-                console.error("Canvas element not found");
+            // Il codice per caricare il modello GLB può rimanere qui
+            const glbUrl = 'assets/ANGEL-FRANK1.glb';
+            console.log(`Attempting to load model from ${glbUrl}`);
+            try {
+                const response = await fetch(glbUrl);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch model: ${response.statusText}`);
+                }
+                const modelData = await response.arrayBuffer();
+                console.log("Model data loaded successfully", modelData.byteLength);
+            } catch (error) {
+                console.error("Error loading model:", error);
             }
         }
+
         start();
+        
     </script>
 </body>
 </html>
