@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 bevy = { version = "0.14.0-rc.3", features = ["jpeg", "animation"] }
 taffy ="0.5.1"
+
