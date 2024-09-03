@@ -1,0 +1,2 @@
+/*
+  Content-Security-Policy: script-src 'self' 'unsafe-eval';
