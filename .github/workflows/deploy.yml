@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - gh-pages  # Modifica se il tuo branch principale ha un altro nome
+      - main  # Modifica se il tuo branch principale ha un altro nome
 
 jobs:
   build:
@@ -13,30 +13,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          node-version: '14'  # Specifica la versione di Node.js necessaria
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+  
+      - name: Install wasm-bindgen-cli
+        run: cargo install wasm-bindgen-cli
 
-      - name: Install dependencies
+      - name: Build
+        working-directory: ./main
         run: |
-          npm install
+          cargo build --release --target wasm32-unknown-unknown
+          wasm-bindgen --out-dir ./out/ --target web ./target/wasm32-unknown-unknown/release/bevy_3d_rendering.wasm
 
-      - name: Build project
+      - name: Update gh-pages
         run: |
-          npm run build  # Modifica secondo il tuo script di build
-
-      - name: Deploy to GitHub Pages
-        run: |
-          # Copia i contenuti da webuild/out a una directory temporanea
-          mkdir out
-          cp -r webuild/out/* out/
-
-          # Inizializza un nuovo repository nella directory out
-          cd out
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp -R out/* gh-pages/
+          cp -R assets gh-pages/assets  # Assicurati che questo percorso sia corretto
+          cd gh-pages
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add .
-          git commit -m "Deploy to GitHub Pages"
-          git push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+          git commit -m "Update WebAssembly build" || echo "No changes to commit"
+          git push
