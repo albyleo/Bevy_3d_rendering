@@ -1,11 +1,11 @@
-name: Rust WASM GitHub Pages
+name: Bevy WASM GitHub Pages
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -26,20 +26,40 @@ jobs:
           target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-    - name: Install wasm-bindgen-cli
-      run: cargo install wasm-bindgen-cli
+    - name: Install dependencies
+      run: |
+        cargo install wasm-bindgen-cli
+        rustup target add wasm32-unknown-unknown
 
     - name: Build
       run: |
         cargo build --release --target wasm32-unknown-unknown
+        WASM_BINDGEN_VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "wasm-bindgen") | .version')
+        cargo install wasm-bindgen-cli --version $WASM_BINDGEN_VERSION
         wasm-bindgen --out-dir ./out --target web target/wasm32-unknown-unknown/release/bevy_3d_rendering.wasm
 
-    - name: Prepare deployment
+    - name: Prepare artifacts
       run: |
-        mkdir deploy
-        cp index.html deploy/
-        cp -r out deploy/
-        cp -r assets deploy/
+        mkdir artifacts
+        cp index.html artifacts/
+        cp -r out artifacts/
+        cp -r assets artifacts/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: wasm-build
+        path: artifacts
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: wasm-build
+        path: deploy
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
