@@ -18,17 +18,14 @@ jobs:
         target: wasm32-unknown-unknown
         override: true
 
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cargo
-          target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Get wasm-bindgen version
+      id: get-wasm-bindgen-version
+      run: echo "WASM_BINDGEN_VERSION=$(cargo install --list | grep wasm-bindgen-cli | awk '{print $2}')" >> $GITHUB_OUTPUT
 
-    - name: Install wasm-bindgen-cli
-      run: cargo install wasm-bindgen-cli
-      
+    - name: Update wasm-bindgen in Cargo.toml
+      run: |
+        sed -i 's/^wasm-bindgen = ".*"/wasm-bindgen = "=${{ steps.get-wasm-bindgen-version.outputs.WASM_BINDGEN_VERSION }}"/' Cargo.toml
+
     - name: Build
       run: |
         cargo build --release --target wasm32-unknown-unknown
