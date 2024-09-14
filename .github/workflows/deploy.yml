@@ -4,27 +4,38 @@ on:
   push:
     branches: [ main ]
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    
+    - uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-build-wasm-${{ hashFiles('**/Cargo.toml') }}
 
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@stable
       with:
-        profile: minimal
-        toolchain: stable
-        target: wasm32-unknown-unknown
-        override: true
+        targets: wasm32-unknown-unknown
 
-    - name: Get wasm-bindgen version
-      id: get-wasm-bindgen-version
-      run: echo "WASM_BINDGEN_VERSION=$(cargo install --list | grep wasm-bindgen-cli | awk '{print $2}')" >> $GITHUB_OUTPUT
+    - name: Install wasm-bindgen-cli
+      run: cargo install wasm-bindgen-cli
 
-    - name: Update wasm-bindgen in Cargo.toml
+    - name: Update Cargo.toml
       run: |
-        sed -i 's/^wasm-bindgen = ".*"/wasm-bindgen = "=${{ steps.get-wasm-bindgen-version.outputs.WASM_BINDGEN_VERSION }}"/' Cargo.toml
+        WASM_BINDGEN_VERSION=$(cargo install --list | grep wasm-bindgen-cli | awk '{print $2}')
+        sed -i 's/^wasm-bindgen = ".*"/wasm-bindgen = "'$WASM_BINDGEN_VERSION'"/' Cargo.toml
 
     - name: Build
       run: |
