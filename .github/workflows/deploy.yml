@@ -43,10 +43,11 @@ jobs:
 
     - name: Prepare deployment
       run: |
-        mkdir deploy
+        mkdir deploy/assets
         cp index.html deploy/
         cp -r out deploy/
-        cp -r assets deploy/
+        cp -r assets deploy/* deploy/assets/
+        ls -R deploy/assets
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
