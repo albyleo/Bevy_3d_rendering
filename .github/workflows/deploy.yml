@@ -29,8 +29,16 @@ jobs:
       with:
         targets: wasm32-unknown-unknown
 
-    - name: Install wasm-bindgen-cli
-      run: cargo install wasm-bindgen-cli
+    - name: Check and install wasm-bindgen-cli
+      run: |
+        if ! command -v wasm-bindgen &> /dev/null
+        then
+            echo "wasm-bindgen-cli not found, installing..."
+            cargo install wasm-bindgen-cli
+        else
+            echo "wasm-bindgen-cli is already installed"
+            wasm-bindgen --version
+        fi
 
     - name: Fix Cargo.toml
       run: |
@@ -43,14 +51,15 @@ jobs:
 
     - name: Prepare deployment
       run: |
-        mkdir deploy/assets
+        mkdir -p deploy/assets
         cp index.html deploy/
         cp -r out deploy/
-        cp -r assets deploy/* deploy/assets/
-        ls -R deploy/assets
+        cp -r assets/* deploy/assets/
+        echo "Contenuto della directory deploy:"
+        ls -R deploy
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         publish_dir: ./deploy
