@@ -58,6 +58,7 @@ jobs:
         cp index.html deploy/
         cp -r out/* deploy/out/
         cp -r assets/* deploy/assets/
+        touch deploy/.nojekyll
         # Verifica del contenuto della directory deploy
         echo "Contenuto della directory deploy:"
         ls -R deploy
