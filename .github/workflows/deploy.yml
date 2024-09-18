@@ -69,6 +69,15 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./deploy
 
+    - name: Verify deployment files
+      run: |
+        echo "Contents of deploy/assets directory:"
+        ls -l deploy/assets
+        echo "Size of ANGEL-FRANK1_converted.glb:"
+        ls -lh deploy/assets/ANGEL-FRANK1_converted.glb
+        echo "First few bytes of ANGEL-FRANK1_converted.glb:"
+        head -c 20 deploy/assets/ANGEL-FRANK1_converted.glb | xxd
+
     # Aggiungi questo passo per debugging
     - name: Debug Information
       if: failure()
