@@ -8,6 +8,14 @@ use bevy::{
     prelude::*,
 };
 
+const MODEL_PATH: &str = "ANGEL-FRANK1_converted.glb";
+
+#[derive(Resource)]
+struct ModelAsset {
+    scene: Handle<Scene>,
+    animation: Handle<AnimationClip>,
+}
+
 fn main() {
     App::new()
         .insert_resource(AmbientLight {
@@ -15,7 +23,8 @@ fn main() {
             brightness: 2000.0,
         })
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
+        .add_systems(Startup, load_model)
+        .add_systems(Startup, setup.after(load_model))
         .add_plugins(CameraControllerPlugin)
         .add_systems(Update, setup_scene_once_loaded.before(animate_targets))
         .add_systems(Update, animate_light_direction)
@@ -28,10 +37,23 @@ pub struct Animations {
     #[allow(dead_code)]
     graph: Handle<AnimationGraph>,
 }
+
 mod camera_controller;
+
+fn load_model(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+) {
+    let scene = asset_server.load(format!("{}#Scene0", MODEL_PATH));
+    let animation = asset_server.load(format!("{}#Animation0", MODEL_PATH));
+    
+    commands.insert_resource(ModelAsset { scene, animation });
+}
+
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    model_asset: Res<ModelAsset>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut graphs: ResMut<Assets<AnimationGraph>>,
@@ -40,9 +62,8 @@ fn setup(
     let mut graph = AnimationGraph::new();
     let animations = graph
         .add_clips(
-            [GltfAssetLabel::Animation(0).from_asset("assets/ANGEL-FRANK1_converted.glb")]
-                .into_iter()
-                .map(|path| asset_server.load(path)),
+            [model_asset.animation.clone()]
+                .into_iter(),
             1.0,
             graph.root,
         )
@@ -97,7 +118,7 @@ fn setup(
     // Load the glTF scene and start the animation
     // let scene_handle = asset_server.load("assets/ANGEL-FRANK1_converted.glb#Scene0");
     commands.spawn(SceneBundle {
-        scene: asset_server.load(GltfAssetLabel::Scene(0).from_asset("assets/ANGEL-FRANK1_converted.glb")),
+        scene: model_asset.scene.clone(),
         ..default()
     });
 }
