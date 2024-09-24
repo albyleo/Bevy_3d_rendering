@@ -1,4 +1,4 @@
-*.glb filter=lfs diff=lfs merge=lfs -text
-C:/Users/alber/bevy_3d_rendering/assets/ANGEL-FRANK1_converted.glb filter=lfs diff=lfs merge=lfs -text
-C:/Users/alber/bevy_3d_rendering/webbuild/assets/ANGEL-FRANK1_converted.glb filter=lfs diff=lfs merge=lfs -text
-C:/Users/alber/bevy_3d_rendering/assets/ANGEL-FRANK1_converted.glb filter=lfs diff=lfs merge=lfs -text
+assets/ANGEL.glb filter=lfs diff=lfs merge=lfs -text
+assets/nike2.glb filter=lfs diff=lfs merge=lfs -text
+webbuild/assets/ANGEL-FRANK1.glb filter=lfs diff=lfs merge=lfs -text
+webbuild/assets/nike2.glb filter=lfs diff=lfs merge=lfs -text
