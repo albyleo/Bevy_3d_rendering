@@ -157,5 +157,3 @@ fn animate_light_direction(
         );
     }
 }
-
-
