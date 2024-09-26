@@ -1,3 +1,0 @@
-assets/ANGEL.glb filter=lfs diff=lfs merge=lfs -text
-assets/nike2.glb filter=lfs diff=lfs merge=lfs -text
-webbuild/assets/nike2.glb filter=lfs diff=lfs merge=lfs -text
