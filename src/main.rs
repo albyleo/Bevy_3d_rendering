@@ -8,7 +8,7 @@ use bevy::{
     prelude::*,
 };
 
-const MODEL_PATH: &str = "ANGEL-FRANK1_converted.glb";
+const MODEL_PATH: &str = "Angel1.glb";
 
 #[derive(Resource)]
 struct ModelAsset {
