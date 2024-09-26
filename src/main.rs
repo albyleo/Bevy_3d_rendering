@@ -8,7 +8,7 @@ use bevy::{
     prelude::*,
 };
 
-const MODEL_PATH: &str = "Angel1.glb";
+const MODEL_PATH: &str = "Angel01.glb";
 
 #[derive(Resource)]
 struct ModelAsset {
@@ -83,12 +83,6 @@ fn setup(
     })
     .insert(CameraController::default());
 
-    //Mesh
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(500000.0, 500000.0)),
-        material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
-        ..default()
-    });
 
     // Light setup
     commands.spawn(PointLightBundle {

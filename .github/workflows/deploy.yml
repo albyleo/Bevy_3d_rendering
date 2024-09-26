@@ -73,10 +73,10 @@ jobs:
       run: |
         echo "Contents of deploy/assets directory:"
         ls -l deploy/assets
-        echo "Size of ANGEL-FRANK1_converted.glb:"
-        ls -lh deploy/assets/ANGEL-FRANK1_converted.glb
-        echo "First few bytes of ANGEL-FRANK1_converted.glb:"
-        head -c 20 deploy/assets/ANGEL-FRANK1_converted.glb | xxd
+        echo "Size of Angel01.glb:"
+        ls -lh deploy/assets/Angel01.glb
+        echo "First few bytes of Angel01.glb:"
+        head -c 20 deploy/assets/Angel01.glb | xxd
 
     # Aggiungi questo passo per debugging
     - name: Debug Information
